@@ -1,0 +1,15 @@
+.link{
+    display: block;
+    padding: 1rem;
+    color: rgba(0,0,0,.5);
+    text-decoration: none;
+    background-color: transparent;
+}
+a:hover{
+    color: black !important;
+    text-decoration: none !important;
+    background-color: transparent !important;
+}
+.dropdown{
+    padding: .5rem 1rem;
+}

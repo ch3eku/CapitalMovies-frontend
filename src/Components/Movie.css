@@ -1,0 +1,19 @@
+.movie{
+    width: 15rem;
+    height: 32rem;
+    text-align: center;
+    margin: 1rem;
+}
+.movie:hover{
+    transform: scale(1.02);
+    transition: all 200ms linear ;
+}
+.img{
+    padding: .5rem;
+}
+.body{
+    margin: -.5rem;
+}
+.btn{
+    margin: 1rem .5rem;
+}
