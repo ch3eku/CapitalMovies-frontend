@@ -20,7 +20,6 @@ export default class ShowMovie extends Component {
     async componentDidMount() {
 
         const uid = sessionStorage.getItem('_id');
-        console.log(uid);
         if (uid !== null) {
             const [movie, favMovieArray] = await Promise.all([
                 axios.get(`https://api.themoviedb.org/3/movie/${this.props.match.params.id}?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&language=en-US`),
@@ -52,7 +51,6 @@ export default class ShowMovie extends Component {
 
     addHandler = async (e) => {
         const uid = sessionStorage.getItem('_id');
-        console.log(uid);
 
         if (uid !== null) {
             const [movie, favMovieArray] = await Promise.all([
@@ -72,7 +70,6 @@ export default class ShowMovie extends Component {
 
     removeHandler = async (e) => {
         const uid = sessionStorage.getItem('_id');
-        console.log(uid);
 
         if (uid !== null) {
             const [movie, favMovieArray] = await Promise.all([
@@ -89,10 +86,6 @@ export default class ShowMovie extends Component {
         }
     }
 
-    gotoHandler = async () => {
-        this.props.history.push('/discover/favourite');
-    }
-
     render() {
         const card = {
             width: '85%',
@@ -104,7 +97,7 @@ export default class ShowMovie extends Component {
         }
 
         return (
-            <div className='d-flex flex-row justify-content-center align-items-center'>
+            <div className=' row d-flex flex-row justify-content-center align-items-center'>
                 <div className="col col-lg-4 col-sm-6 col-6 m-4">
                     <Card style={card}>
                         <Card.Img src={this.state.img} alt="Card image" />
@@ -124,7 +117,6 @@ export default class ShowMovie extends Component {
 
                                 : <Button onClick={this.removeHandler} variant="danger">Remove from Favourites</Button>
                             }
-                            <Button onClick={this.gotoHandler} variant="info">See Favourites</Button>
                         </Card.Body>
                     </Card>
                 </div>

@@ -5,8 +5,29 @@ import './NavBar.css'
 
 export default class NavBar extends Component {
 
+    logoutHandler = () => {
+        sessionStorage.clear();
+        this.props.setUser(null);
+    }
 
     render() {
+
+        let userLinks;
+        if (this.props.user) {
+            userLinks = (
+                <div className='d-flex flex-row justify-content-center align-items-center'>
+                    <Link className='link' to="">Welcome {this.props.user.username}</Link>
+                    <Link className='link' to="/" onClick={this.logoutHandler}>Logout</Link>
+                </div>
+            )
+        } else {
+            userLinks = (
+                <div className='d-flex flex-row justify-content-center align-items-center'>
+                    <Link className='link' to="/user/signup">Signup</Link>
+                    <Link className='link' to="/user/login">Login</Link>
+                </div>
+            )
+        }
 
         return (
             <Navbar bg="light" expand="lg">
@@ -19,13 +40,14 @@ export default class NavBar extends Component {
                             <NavDropdown className='dropdown' title="Discover Movies" id="basic-nav-dropdown">
                                 <Link className='link' to="/discover/popular">Popular</Link>
                                 <Link className='link' to="/discover/latest">Latest</Link>
-                                <Link className='link' to="/discover/favourite">Favourites</Link>
+                                {(this.props.user)
+                                    ? <Link className='link' to="/discover/favourite">Favourites</Link>
+                                    : null
+                                }
                             </NavDropdown>
                         </Nav>
                         <Nav className="ml-auto">
-                            <Link className='link' to="/user/signup">Signup</Link>
-                            <Link className='link' to="/user/login">Login</Link>
-                            <Link className='link' to="/user/logout">Logout</Link>
+                            {userLinks}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import './Login.css';
 import axios from 'axios';
+import { Redirect } from 'react-router';
 
 export default class Login extends Component {
 
@@ -9,7 +10,8 @@ export default class Login extends Component {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            loggedIn: false
         }
     }
 
@@ -24,7 +26,11 @@ export default class Login extends Component {
                 if (res.status === 200) {
                     sessionStorage.setItem('_id', res.data._id);
                     sessionStorage.setItem('username', res.data.username);
-                    this.props.history.push('/');
+                    sessionStorage.setItem('jsonwebtoken', res.data.token);
+                    this.setState({
+                        loggedIn: true
+                    });
+                    this.props.setUser(res.data);
                 }
             })
             .catch(err => {
@@ -34,6 +40,10 @@ export default class Login extends Component {
     }
 
     render() {
+        if (this.state.loggedIn) {
+            return <Redirect to='/'/>
+        }
+
         return (
             <div className="formdiv">
                 <h4 className="text-center display-4">Login</h4>
