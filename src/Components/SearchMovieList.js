@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import './MovieList.css'
 
 
-export default class LatMovieList extends Component {
+export default class MovieList extends Component {
 
     constructor(props) {
         super(props);
@@ -16,21 +16,29 @@ export default class LatMovieList extends Component {
     }
 
     async componentDidMount() {
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&page=${this.state.page}`);
+        let movieName = this.props.match.params.id;
+        movieName = movieName.replace('%20', ' ');
+        const fetchmovies = await axios.get(`
+https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&query=${movieName}&page=${this.state.page}`);
         this.setState({ movies: fetchmovies.data.results });
-        console.log(fetchmovies);
     }
 
     pPageHandler = async () => {
+        let movieName = this.props.match.params.id;
+        movieName = movieName.replace('%20', ' ');
         let newPage = this.state.page - 1;
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&page=${newPage}`);
+        const fetchmovies = await axios.get(`
+https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&query=${movieName}&page=${newPage}`);
         this.setState({ movies: fetchmovies.data.results });
         this.setState({ page: newPage });
     }
 
     nPageHandler = async () => {
+        let movieName = this.props.match.params.id;
+        movieName = movieName.replace('%20', ' ');
         let newPage = this.state.page + 1;
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&page=${newPage}`);
+        const fetchmovies = await axios.get(`
+https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&query=${movieName}&page=${newPage}`);
         this.setState({ movies: fetchmovies.data.results });
         this.setState({ page: newPage });
     }

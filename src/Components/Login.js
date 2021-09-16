@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import './Login.css';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import jwt_decode from "jwt-decode";
 
 export default class Login extends Component {
 
@@ -24,18 +25,25 @@ export default class Login extends Component {
         await axios.post('/user/login', this.state)
             .then(res => {
                 if (res.status === 200) {
-                    sessionStorage.setItem('_id', res.data._id);
-                    sessionStorage.setItem('username', res.data.username);
+                    window.alert(res.data.success);
                     sessionStorage.setItem('jsonwebtoken', res.data.token);
+                    const decodedData = jwt_decode(res.data.token);
                     this.setState({
                         loggedIn: true
                     });
-                    this.props.setUser(res.data);
+                    //Clear storage after specific time
+                    setTimeout(function () {
+                        sessionStorage.clear();
+                    },
+                        (60*60*1000)
+                    );
+                    this.props.setUser(decodedData);
                 }
             })
-            .catch(err => {
-                window.alert("Invalid Credentials");
-                this.props.history.push('/user/login');
+            .catch(error => {
+                if (error.response) {
+                    window.alert(error.response.data.error);
+                }
             })
     }
 

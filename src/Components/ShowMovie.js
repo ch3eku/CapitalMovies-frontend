@@ -1,33 +1,36 @@
 import React, { Component } from 'react'
 import { Card, Button } from 'react-bootstrap';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 export default class ShowMovie extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            uid:'',
+            uid: '',
+            isaDisabled: false,
+            isrDisabled: false,
             title: '',
             img: '',
             overview: '',
             release_date: '',
             vote_average: '',
-            favMovieArray:[]
+            favMovieArray: []
         }
     }
 
     async componentDidMount() {
-
-        const uid = sessionStorage.getItem('_id');
-        if (uid !== null) {
+        const token = sessionStorage.getItem('jsonwebtoken');
+        if (token !== null) {
+            const decodedData = jwt_decode(token);
             const [movie, favMovieArray] = await Promise.all([
-                axios.get(`https://api.themoviedb.org/3/movie/${this.props.match.params.id}?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&language=en-US`),
-                axios.get(`/user/${uid}/favourite`)
+                axios.get(`https://api.themoviedb.org/3/movie/${this.props.match.params.id}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`),
+                axios.get(`/user/${decodedData._id}/favourite`)
             ]);
-            
+
             this.setState({
-                uid: sessionStorage.getItem('_id'),
+                uid: decodedData._id,
                 title: movie.data.title,
                 img: `https://image.tmdb.org/t/p/original/${movie.data.poster_path}`,
                 overview: movie.data.overview,
@@ -35,11 +38,9 @@ export default class ShowMovie extends Component {
                 vote_average: movie.data.vote_average,
                 favMovieArray: favMovieArray.data
             });
-        }
-        else {
-            const movie = await axios.get(`https://api.themoviedb.org/3/movie/${this.props.match.params.id}?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&language=en-US`);
+        } else {
+            const movie = await axios.get(`https://api.themoviedb.org/3/movie/${this.props.match.params.id}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`);
             this.setState({
-                uid: sessionStorage.getItem('_id'),
                 title: movie.data.title,
                 img: `https://image.tmdb.org/t/p/original/${movie.data.poster_path}`,
                 overview: movie.data.overview,
@@ -49,41 +50,37 @@ export default class ShowMovie extends Component {
         }
     }
 
-    addHandler = async (e) => {
-        const uid = sessionStorage.getItem('_id');
-
-        if (uid !== null) {
-            const [movie, favMovieArray] = await Promise.all([
-                axios.post(`/user/${this.state.uid}/favourite/${this.props.match.params.id}`),
-                axios.get(`/user/${sessionStorage.getItem('_id')}/favourite`)
-            ]);
-            
+    aDisableHandler = () => {
+        if (this.state.uid) {
             this.setState({
-                favMovieArray: favMovieArray.data
+                isaDisabled: true
             });
+            this.addHandler();
+        } else {
+            window.alert('Unable to add. Please login first');
         }
-        else {
-            window.alert('Login to continue...');
-        }
+    }
 
+    rDisableHandler = () => {
+        this.setState({
+            isrDisabled: true
+        });
+        this.removeHandler();
+    }
+    addHandler = async (e) => {
+        const favMovieArray = await axios.post(`/user/${this.state.uid}/favourite/${this.props.match.params.id}`);
+        this.setState({
+            favMovieArray: favMovieArray.data,
+            isrDisabled: false
+        });
     }
 
     removeHandler = async (e) => {
-        const uid = sessionStorage.getItem('_id');
-
-        if (uid !== null) {
-            const [movie, favMovieArray] = await Promise.all([
-                axios.delete(`/user/${this.state.uid}/favourite/${this.props.match.params.id}`),
-                axios.get(`/user/${sessionStorage.getItem('_id')}/favourite`)
-            ]);
-
-            this.setState({
-                favMovieArray: favMovieArray.data
-            });
-        }
-        else {
-            window.alert('Login to continue...');
-        }
+        const favMovieArray = await axios.delete(`/user/${this.state.uid}/favourite/${this.props.match.params.id}`);
+        this.setState({
+            favMovieArray: favMovieArray.data,
+            isaDisabled: false
+        });
     }
 
     render() {
@@ -113,9 +110,9 @@ export default class ShowMovie extends Component {
                             </Card.Text>
                             <Card.Text>{this.state.overview}</Card.Text>
                             {!this.state.favMovieArray.includes(this.props.match.params.id)
-                                ? <Button onClick={this.addHandler} variant="secondary">Add to Favourites</Button>
+                                ? <Button onClick={this.aDisableHandler} variant="secondary" disabled={this.state.isaDisabled}>Add to Favourites</Button>
 
-                                : <Button onClick={this.removeHandler} variant="danger">Remove from Favourites</Button>
+                                : <Button onClick={this.rDisableHandler} variant="danger" disabled={this.state.isrDisabled}>Remove from Favourites</Button>
                             }
                         </Card.Body>
                     </Card>

@@ -15,10 +15,10 @@ export default class FavMovieList extends Component {
 
     async componentDidMount() {
 
-        let fetchmovies = await axios.get(`/user/${sessionStorage.getItem('_id')}/favourite`);
+        let fetchmovies = await axios.get(`/user/${this.props.user._id}/favourite`);
         fetchmovies = fetchmovies.data;
         for (let i = 0; i < fetchmovies.length; i++) {
-            let movie = await axios.get(`https://api.themoviedb.org/3/movie/${fetchmovies[i]}?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&language=en-US`);
+            let movie = await axios.get(`https://api.themoviedb.org/3/movie/${fetchmovies[i]}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`);
             movie = movie.data;
             this.setState({
                 movies: [
@@ -40,8 +40,6 @@ export default class FavMovieList extends Component {
                 img={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
             />
         })
-
-        // let show = movielist.length ? true : false;
 
         const h2 = {
             margin: '20px auto 30px auto',

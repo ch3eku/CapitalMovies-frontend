@@ -23,11 +23,14 @@ export default class Signup extends Component {
         await axios.post('/user/signup', this.state)
             .then(res => {
                 if (res.status === 200) {
+                    window.alert(res.data.success);
                     this.props.history.push('/user/login');
                 }
             })
-            .catch((err) => {
-                window.alert("User already Exists or Please fill all the fields.");
+            .catch((error) => {
+                if (error.response) {
+                    window.alert(error.response.data.error);
+                }
                 this.props.history.push('/user/signup');
             })
     }

@@ -16,20 +16,20 @@ export default class PopMovieList extends Component {
     }
 
     async componentDidMount() {
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&language=en-US&sort_by=popularity.desc&page=${this.state.page}`);
+        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&sort_by=popularity.desc&page=${this.state.page}`);
         this.setState({ movies: fetchmovies.data.results });
     }
 
     pPageHandler = async () => {
         let newPage = this.state.page - 1;
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&language=en-US&sort_by=popularity.desc&page=${newPage}`);
+        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&sort_by=popularity.desc&page=${newPage}`);
         this.setState({ movies: fetchmovies.data.results });
         this.setState({ page: newPage });
     }
 
     nPageHandler = async () => {
         let newPage = this.state.page + 1;
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&language=en-US&sort_by=popularity.desc&page=${newPage}`);
+        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&sort_by=popularity.desc&page=${newPage}`);
         this.setState({ movies: fetchmovies.data.results });
         this.setState({ page: newPage });
     }

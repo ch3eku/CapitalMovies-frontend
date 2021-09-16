@@ -16,24 +16,24 @@ export default class MovieList extends Component {
     }
 
     async componentDidMount() {
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&page=${this.state.page}`);
+        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&page=${this.state.page}`);
         this.setState({ movies: fetchmovies.data.results });
     }
 
     pPageHandler = async () => {
         let newPage = this.state.page - 1;
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&page=${newPage}`);
+        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&page=${newPage}`);
         this.setState({ movies: fetchmovies.data.results });
         this.setState({ page: newPage });
     }
-    
+
     nPageHandler = async () => {
         let newPage = this.state.page + 1;
-        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=f7f07ca3fd7b0e7cc28183c3af31f32d&page=${newPage}`);
+        const fetchmovies = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&page=${newPage}`);
         this.setState({ movies: fetchmovies.data.results });
         this.setState({ page: newPage });
     }
-    
+
     render() {
         let movielist = this.state.movies.map((movie) => {
             return <Movie

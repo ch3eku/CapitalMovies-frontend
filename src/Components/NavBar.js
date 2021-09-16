@@ -1,9 +1,26 @@
 import React, { Component } from 'react';
-import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
+import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './NavBar.css'
 
 export default class NavBar extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            search: ''
+        }
+    }
+
+    changeHandler = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    submitHandler = async (e) => {
+        e.preventDefault();
+        //
+        window.location = `/search/movie/${this.state.search}`;
+    }
 
     logoutHandler = () => {
         sessionStorage.clear();
@@ -15,14 +32,13 @@ export default class NavBar extends Component {
         let userLinks;
         if (this.props.user) {
             userLinks = (
-                <div className='d-flex flex-row justify-content-center align-items-center'>
-                    <Link className='link' to="">Welcome {this.props.user.username}</Link>
+                <NavDropdown className='dropdown' title={this.props.user.username} id="basic-nav-dropdown">
                     <Link className='link' to="/" onClick={this.logoutHandler}>Logout</Link>
-                </div>
+                </NavDropdown>
             )
         } else {
             userLinks = (
-                <div className='d-flex flex-row justify-content-center align-items-center'>
+                <div className='d-flex flex-row align-items-center'>
                     <Link className='link' to="/user/signup">Signup</Link>
                     <Link className='link' to="/user/login">Login</Link>
                 </div>
@@ -46,6 +62,17 @@ export default class NavBar extends Component {
                                 }
                             </NavDropdown>
                         </Nav>
+                        <Form onSubmit={this.submitHandler} className="d-flex justify-content-center align-items-center">
+                            <FormControl
+                                type="search"
+                                name="search"
+                                placeholder="Search movie"
+                                className="mr-2"
+                                aria-label="Search"
+                                onChange={this.changeHandler}
+                            />
+                            <Button type="submit" className='searchbtn' variant="outline-success">Search</Button>
+                        </Form>
                         <Nav className="ml-auto">
                             {userLinks}
                         </Nav>

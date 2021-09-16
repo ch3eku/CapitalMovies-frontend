@@ -8,9 +8,9 @@ import MovieList from './Components/MovieList'
 import PopMovieList from './Components/PopMovieList'
 import LatMovieList from './Components/LatMovieList'
 import FavMovieList from './Components/FavMovieList'
+import SearchMovieList from './Components/SearchMovieList'
 import ShowMovie from './Components/ShowMovie'
 import Error from './Components/Error'
-import axios from 'axios';
 
 export default class App extends Component {
 
@@ -22,17 +22,7 @@ export default class App extends Component {
     }
 
     async componentDidMount() {
-        await axios.get(`/user`)
-            .then(res => {
-                if (res.status===200) {
-                    this.setUser(res.data);
-                }
-            })
-            .catch(err => {
-                console.log('In App.js');
-                this.setUser(null);
-                console.log(err);
-            })
+        this.setUser(null);
     }
 
     setUser = user => {
@@ -50,7 +40,8 @@ export default class App extends Component {
                         <Route exact path="/" component={MovieList} />
                         <Route exact path="/discover/popular" component={PopMovieList} />
                         <Route exact path="/discover/latest" component={LatMovieList} />
-                        <Route exact path="/discover/favourite" component={FavMovieList} />
+                        <Route exact path="/discover/favourite" component={() => <FavMovieList user={ this.state.user }/>} />
+                        <Route exact path="/search/movie/:id" component={SearchMovieList} />
                         <Route exact path="/show/movie/:id" component={ShowMovie} />
                         <Route exact path="/user/signup" component={Signup} />
                         <Route exact path="/user/login" component={() => <Login setUser={this.setUser} />} />
