@@ -16,12 +16,6 @@ export default class NavBar extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    submitHandler = async (e) => {
-        e.preventDefault();
-        //
-        window.location = `/search/movie/${this.state.search}`;
-    }
-
     logoutHandler = () => {
         sessionStorage.clear();
         this.props.setUser(null);
@@ -62,7 +56,7 @@ export default class NavBar extends Component {
                                 }
                             </NavDropdown>
                         </Nav>
-                        <Form onSubmit={this.submitHandler} className="d-flex justify-content-center align-items-center">
+                        <Form className="d-flex justify-content-center align-items-center">
                             <FormControl
                                 type="search"
                                 name="search"
@@ -71,7 +65,9 @@ export default class NavBar extends Component {
                                 aria-label="Search"
                                 onChange={this.changeHandler}
                             />
-                            <Button type="submit" className='searchbtn' variant="outline-success">Search</Button>
+                            <Link to={`/search/movie/${this.state.search}`}>
+                                <Button type="submit" className='searchbtn' variant="outline-success">Search</Button>
+                            </Link>
                         </Form>
                         <Nav className="ml-auto">
                             {userLinks}
